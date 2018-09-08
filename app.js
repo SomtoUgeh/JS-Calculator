@@ -8,13 +8,23 @@ calculator__keys.addEventListener("click", e => {
 		const action = key.dataset.action;
 		const keyContent = key.textContent;
 		const displayedNum = calculator__display.textContent;
+		const previousKeyType = calculator.dataset.previousKeyType;
+
+		// Removing 'is-depressed' state from each key
+		Array.from(key.parentNode.children).forEach(k =>
+			k.classList.remove("is-depressed")
+		);
 
 		if (!action) {
-			if (displayedNum == "0") {
+			if (displayedNum === "0" || previousKeyType === "operator") {
 				calculator__display.textContent = keyContent;
 			} else {
 				calculator__display.textContent = displayedNum + keyContent;
 			}
+		}
+
+		if (action === "decimal") {
+			calculator__display.textContent = displayedNum + ".";
 		}
 
 		if (
@@ -23,11 +33,9 @@ calculator__keys.addEventListener("click", e => {
 			action === "multiply" ||
 			action === "divide"
 		) {
-			console.log("Operation key");
-		}
-
-		if (action === "decimal") {
-			console.log("decimal");
+			key.classList.add("is-depressed");
+			// Make a custom dataset for holding the previous key pressed 
+			calculator.dataset.previousKeyType = "operator";
 		}
 
 		if (action === "clear") {
