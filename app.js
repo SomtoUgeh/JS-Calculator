@@ -4,7 +4,7 @@ const calculator__display = document.querySelector(".calculator__display");
 
 calculator__keys.addEventListener("click", e => {
 	if (e.target.matches("button")) {
-		// check for match - button
+		// Check for match - button
 		const key = e.target;
 		const action = key.dataset.action;
 		const keyContent = key.textContent;
@@ -26,12 +26,12 @@ calculator__keys.addEventListener("click", e => {
 			calculator.dataset.previousKeyType = "number";
 		}
 
-
-		// FIXME: Bug in the decimal place 'else if' 
 		if (action === "decimal") {
 			if (!displayedNum.includes(".")) {
 				calculator__display.textContent = displayedNum + ".";
-			} else if (previousKeyType === "operator") {
+			}
+
+			if (previousKeyType === "operator") {
 				calculator__display.textContent = "0.";
 			}
 
