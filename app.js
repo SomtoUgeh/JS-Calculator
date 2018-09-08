@@ -33,9 +33,11 @@ calculator__keys.addEventListener("click", e => {
 			action === "multiply" ||
 			action === "divide"
 		) {
-			key.classList.add("is-depressed");
-			// Make a custom dataset for holding the previous key pressed 
+			// Make a custom dataset for holding information
+			calculator.dataset.firstValue = displayedNum;
+			calculator.dataset.operation = action;
 			calculator.dataset.previousKeyType = "operator";
+			key.classList.add("is-depressed");
 		}
 
 		if (action === "clear") {
@@ -43,7 +45,32 @@ calculator__keys.addEventListener("click", e => {
 		}
 
 		if (action === "calculate") {
-			console.log("calculate");
+			const firstValue = calculator.dataset.firstValue;
+			const secondValue = displayedNum;
+			const operator = calculator.dataset.operation;
+
+			calculator__display.textContent = calculate(
+				firstValue,
+				operator,
+				secondValue
+			);
 		}
 	}
 });
+
+const calculate = (n1, operator, n2) => {
+	let result = "";
+
+	// Use parseFloat to convert string to floats
+	if (operator === "add") {
+		result = parsrFloat(n1) + parsrFloat(n2);
+	} else if (operator === "subtract") {
+		result = parsrFloat(n1) - parsrFloat(n2);
+	} else if (operator === "multiply") {
+		result = parsrFloat(n1) * parsrFloat(n2);
+	} else if (operator === "divide") {
+		result = parsrFloat(n1) / parsrFloat(n2);
+	}
+
+	return result;
+};
