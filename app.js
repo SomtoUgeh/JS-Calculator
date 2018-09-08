@@ -11,7 +11,7 @@ calculator__keys.addEventListener("click", e => {
 		const displayedNum = calculator__display.textContent;
 		const previousKeyType = calculator.dataset.previousKeyType;
 
-		// Removing 'is-depressed' state from each key
+		// Remove 'is-depressed' state from each key
 		Array.from(key.parentNode.children).forEach(k =>
 			k.classList.remove("is-depressed")
 		);
@@ -26,6 +26,8 @@ calculator__keys.addEventListener("click", e => {
 			calculator.dataset.previousKeyType = "number";
 		}
 
+
+		// FIXME: Bug in the decimal place 'else if' 
 		if (action === "decimal") {
 			if (!displayedNum.includes(".")) {
 				calculator__display.textContent = displayedNum + ".";
@@ -42,6 +44,19 @@ calculator__keys.addEventListener("click", e => {
 			action === "multiply" ||
 			action === "divide"
 		) {
+			const firstValue = calculator.dataset.firstValue;
+			const operator = calculator.dataset.operation;
+			const secondValue = displayedNum;
+
+			// Note: It's sufficient to check for firstValue and operator because secondValue always exists
+			if (firstValue && operator && previousKeyType !== "operator") {
+				calculator__display.textContent = calculate(
+					firstValue,
+					operator,
+					secondValue
+				);
+			}
+
 			// Make custom datasets for holding information
 			calculator.dataset.firstValue = displayedNum;
 			calculator.dataset.operation = action;
