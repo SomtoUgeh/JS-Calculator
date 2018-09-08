@@ -4,6 +4,7 @@ const calculator__display = document.querySelector(".calculator__display");
 
 calculator__keys.addEventListener("click", e => {
 	if (e.target.matches("button")) {
+		// check for match - button
 		const key = e.target;
 		const action = key.dataset.action;
 		const keyContent = key.textContent;
@@ -24,7 +25,9 @@ calculator__keys.addEventListener("click", e => {
 		}
 
 		if (action === "decimal") {
-			calculator__display.textContent = displayedNum + ".";
+			if (!displayedNum.includes(".")) {
+				calculator__display.textContent = displayedNum + ".";
+			}
 		}
 
 		if (
@@ -33,7 +36,7 @@ calculator__keys.addEventListener("click", e => {
 			action === "multiply" ||
 			action === "divide"
 		) {
-			// Make a custom dataset for holding information
+			// Make custom datasets for holding information
 			calculator.dataset.firstValue = displayedNum;
 			calculator.dataset.operation = action;
 			calculator.dataset.previousKeyType = "operator";
@@ -63,13 +66,13 @@ const calculate = (n1, operator, n2) => {
 
 	// Use parseFloat to convert string to floats
 	if (operator === "add") {
-		result = parsrFloat(n1) + parsrFloat(n2);
+		result = parseFloat(n1) + parseFloat(n2);
 	} else if (operator === "subtract") {
-		result = parsrFloat(n1) - parsrFloat(n2);
+		result = parseFloat(n1) - parseFloat(n2);
 	} else if (operator === "multiply") {
-		result = parsrFloat(n1) * parsrFloat(n2);
+		result = parseFloat(n1) * parseFloat(n2);
 	} else if (operator === "divide") {
-		result = parsrFloat(n1) / parsrFloat(n2);
+		result = parseFloat(n1) / parseFloat(n2);
 	}
 
 	return result;
