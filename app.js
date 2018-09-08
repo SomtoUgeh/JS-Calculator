@@ -22,12 +22,18 @@ calculator__keys.addEventListener("click", e => {
 			} else {
 				calculator__display.textContent = displayedNum + keyContent;
 			}
+
+			calculator.dataset.previousKeyType = "number";
 		}
 
 		if (action === "decimal") {
-			if (!displayedNum.includes(".")) { 
+			if (!displayedNum.includes(".")) {
 				calculator__display.textContent = displayedNum + ".";
+			} else if (previousKeyType === "operator") {
+				calculator__display.textContent = "0.";
 			}
+
+			calculator.dataset.previousKeyType = "decimal";
 		}
 
 		if (
@@ -44,7 +50,7 @@ calculator__keys.addEventListener("click", e => {
 		}
 
 		if (action === "clear") {
-			console.log("clear");
+			calculator.dataset.previousKeyType = "clear";
 		}
 
 		if (action === "calculate") {
@@ -57,6 +63,8 @@ calculator__keys.addEventListener("click", e => {
 				operator,
 				secondValue
 			);
+
+			calculator.dataset.previousKeyType = "calculate";
 		}
 	}
 });
