@@ -50,15 +50,17 @@ calculator__keys.addEventListener("click", e => {
 
 			// Note: It's sufficient to check for firstValue and operator because secondValue always exists
 			if (firstValue && operator && previousKeyType !== "operator") {
-				calculator__display.textContent = calculate(
-					firstValue,
-					operator,
-					secondValue
-				);
+				const calcValue = calculate(firstValue, operator, secondValue);
+				calculator__display.textContent = calcValue;
+
+				// Update calculated value as firstValue
+				calculator.dataset.firstValue = calcValue;
+			} else {
+				// If there are no calculations, set displayedNum as the firstValue
+				calculator.dataset.firstValue = displayedNum;
 			}
 
 			// Make custom datasets for holding information
-			calculator.dataset.firstValue = displayedNum;
 			calculator.dataset.operation = action;
 			calculator.dataset.previousKeyType = "operator";
 			key.classList.add("is-depressed");
