@@ -3,8 +3,8 @@ const calculator__keys = document.querySelector(".calculator__keys");
 const calculator__display = document.querySelector(".calculator__display");
 
 calculator__keys.addEventListener("click", e => {
+	// Check for all instances of <button>
 	if (e.target.matches("button")) {
-		// Check for match - button
 		const key = e.target;
 		const action = key.dataset.action;
 		const keyContent = key.textContent;
@@ -71,15 +71,21 @@ calculator__keys.addEventListener("click", e => {
 		}
 
 		if (action === "calculate") {
-			const firstValue = calculator.dataset.firstValue;
-			const secondValue = displayedNum;
-			const operator = calculator.dataset.operation;
+			let firstValue = calculator.dataset.firstValue;
+			let secondValue = displayedNum;
+			let operator = calculator.dataset.operation;
 
-			calculator__display.textContent = calculate(
-				firstValue,
-				operator,
-				secondValue
-			);
+			if (firstValue) {
+				if (previousKeyType === "calculate") {
+					firstValue = displayedNum;
+				}
+
+				calculator__display.textContent = calculate(
+					firstValue,
+					operator,
+					secondValue
+				);
+			}
 
 			calculator.dataset.previousKeyType = "calculate";
 		}
