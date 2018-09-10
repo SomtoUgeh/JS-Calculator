@@ -25,7 +25,7 @@ calculator__keys.addEventListener("click", e => {
 
 			calculator.dataset.previousKeyType = "number";
 		}
-
+		
 		if (action === "decimal") {
 			if (!displayedNum.includes(".")) {
 				calculator__display.textContent = displayedNum + ".";
