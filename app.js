@@ -11,7 +11,7 @@ calculator__keys.addEventListener("click", e => {
 		const displayedNum = calculator__display.textContent;
 		const previousKeyType = calculator.dataset.previousKeyType;
 
-		// Remove 'is-depressed' state from each key
+		// Make an array and remove 'is-depressed' state from each key
 		Array.from(key.parentNode.children).forEach(k =>
 			k.classList.remove("is-depressed")
 		);
@@ -25,7 +25,7 @@ calculator__keys.addEventListener("click", e => {
 
 			calculator.dataset.previousKeyType = "number";
 		}
-		
+
 		if (action === "decimal") {
 			if (!displayedNum.includes(".")) {
 				calculator__display.textContent = displayedNum + ".";
