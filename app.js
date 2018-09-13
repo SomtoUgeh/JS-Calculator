@@ -106,5 +106,5 @@ const calculate = (n1, operator, n2) => {
 		result = parseFloat(n1) / parseFloat(n2);
 	}
 
-	return result;
+	return result.toFixed(4);
 };
