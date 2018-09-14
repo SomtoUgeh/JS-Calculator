@@ -17,7 +17,11 @@ calculator__keys.addEventListener("click", e => {
 		);
 
 		if (!action) {
-			if (displayedNum === "0" || previousKeyType === "operator") {
+			if (
+				displayedNum === "0" ||
+				previousKeyType === "operator" ||
+				previousKeyType === "calculate"
+			) {
 				calculator__display.textContent = keyContent;
 			} else {
 				calculator__display.textContent = displayedNum + keyContent;
@@ -31,7 +35,10 @@ calculator__keys.addEventListener("click", e => {
 				calculator__display.textContent = displayedNum + ".";
 			}
 
-			if (previousKeyType === "operator") {
+			if (
+				previousKeyType === "operator" ||
+				previousKeyType === "calculate"
+			) {
 				calculator__display.textContent = "0.";
 			}
 
@@ -49,7 +56,12 @@ calculator__keys.addEventListener("click", e => {
 			const secondValue = displayedNum;
 
 			// Note: It's sufficient to check for firstValue and operator because secondValue always exists
-			if (firstValue && operator && previousKeyType !== "operator") {
+			if (
+				firstValue &&
+				operator &&
+				previousKeyType !== "operator" &&
+				previousKeyType !== "calculate"
+			) {
 				const calcValue = calculate(firstValue, operator, secondValue);
 				calculator__display.textContent = calcValue;
 
@@ -67,6 +79,22 @@ calculator__keys.addEventListener("click", e => {
 		}
 
 		if (action === "clear") {
+			if (key.textContent === "AC") {
+				calculator.dataset.firstValue = "";
+				calculator.dataset.modValue = "";
+				calculator.dataset.operator = "";
+				calculator.dataset.previousKeyType = "";
+			} else {
+				key.textContent = "AC";
+			}
+
+			display.textContent = 0;
+			calculator.dataset.previousKeyType = "clear";
+		}
+
+		if (action !== "clear") {
+			const clearButton = calculator.querySelector("[data-action=clear]");
+			clearButton.textContent = "CE";
 			calculator.dataset.previousKeyType = "clear";
 		}
 
@@ -78,6 +106,7 @@ calculator__keys.addEventListener("click", e => {
 			if (firstValue) {
 				if (previousKeyType === "calculate") {
 					firstValue = displayedNum;
+					secondValue = calculator.dataset.modValue;
 				}
 
 				calculator__display.textContent = calculate(
@@ -87,6 +116,7 @@ calculator__keys.addEventListener("click", e => {
 				);
 			}
 
+			calculator.dataset.modValue = secondValue;
 			calculator.dataset.previousKeyType = "calculate";
 		}
 	}
@@ -106,5 +136,5 @@ const calculate = (n1, operator, n2) => {
 		result = parseFloat(n1) / parseFloat(n2);
 	}
 
-	return result.toFixed(4);
+	return result;
 };
