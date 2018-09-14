@@ -88,14 +88,13 @@ calculator__keys.addEventListener("click", e => {
 				key.textContent = "AC";
 			}
 
-			display.textContent = 0;
+			calculator__display.textContent = 0;
 			calculator.dataset.previousKeyType = "clear";
 		}
 
 		if (action !== "clear") {
 			const clearButton = calculator.querySelector("[data-action=clear]");
 			clearButton.textContent = "CE";
-			calculator.dataset.previousKeyType = "clear";
 		}
 
 		if (action === "calculate") {
