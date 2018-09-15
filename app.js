@@ -21,52 +21,7 @@ calculator__keys.addEventListener("click", e => {
 		// Pure function
 		const resultString = createResultString();
 
-		createResultString = () => {
-			// Variables required are:
-			// 1. keyContent
-			// 2. displayedNum
-			// 3. previousKeyType
-			// 4. action
-
-			if (!action) {
-				return displayedNum === "0" ||
-					previousKeyType === "operator" ||
-					previousKeyType === "calculate"
-					? keyContent
-					: displayedNum + keyContent;
-			}
-
-			if (action === "decimal") {
-				if (!displayedNum.includes(".")) return displayedNum + ".";
-				if (
-					previousKeyType === "operator" ||
-					previousKeyType === "calculate"
-				)
-					return "0.";
-				return displayedNum;
-			}
-
-			if (
-				action === "add" ||
-				action === "subtract" ||
-				action === "multiply" ||
-				action === "divide"
-			) {
-				const firstValue = calculator.dataset.firstValue;
-				const operator = calculator.dataset.operation;
-
-				return firstValue &&
-					operator &&
-					previousKeyType !== "operator" &&
-					previousKeyType !== "calculate"
-					? calculate(firstValue, operator, displayedNum)
-					: displayedNum;
-			}
-		};
-
 		// Impure function
-
-		calculator__display.textContent = resultString;
 		updateCalculatorState();
 
 		if (
@@ -75,27 +30,6 @@ calculator__keys.addEventListener("click", e => {
 			action === "multiply" ||
 			action === "divide"
 		) {
-			const firstValue = calculator.dataset.firstValue;
-			const operator = calculator.dataset.operation;
-			const secondValue = displayedNum;
-
-			// Note: It's sufficient to check for firstValue and operator because secondValue always exists
-			if (
-				firstValue &&
-				operator &&
-				previousKeyType !== "operator" &&
-				previousKeyType !== "calculate"
-			) {
-				const calcValue = calculate(firstValue, operator, secondValue);
-				calculator__display.textContent = calcValue;
-
-				// Update calculated value as firstValue
-				calculator.dataset.firstValue = calcValue;
-			} else {
-				// If there are no calculations, set displayedNum as the firstValue
-				calculator.dataset.firstValue = displayedNum;
-			}
-
 			// Make custom datasets for holding information
 			calculator.dataset.operation = action;
 			calculator.dataset.previousKeyType = "operator";
@@ -111,8 +45,6 @@ calculator__keys.addEventListener("click", e => {
 			} else {
 				key.textContent = "AC";
 			}
-
-			calculator__display.textContent = 0;
 			calculator.dataset.previousKeyType = "clear";
 		}
 
@@ -122,28 +54,79 @@ calculator__keys.addEventListener("click", e => {
 		}
 
 		if (action === "calculate") {
-			let firstValue = calculator.dataset.firstValue;
-			let secondValue = displayedNum;
-			let operator = calculator.dataset.operation;
-
-			if (firstValue) {
-				if (previousKeyType === "calculate") {
-					firstValue = displayedNum;
-					secondValue = calculator.dataset.modValue;
-				}
-
-				calculator__display.textContent = calculate(
-					firstValue,
-					operator,
-					secondValue
-				);
-			}
-
 			calculator.dataset.modValue = secondValue;
 			calculator.dataset.previousKeyType = "calculate";
 		}
 	}
 });
+
+calculator__keys.addEventListener("click", e => {
+	if (e.target.matches("button")) return;
+	const displayedNum = calculator__display.textContent;
+	const resultString = createResultString(
+		e.target,
+		displayedNum,
+		calculator.dataset
+	);
+});
+
+createResultString = (key, displayedNum, state) => {
+	const keyContent = key.textContent;
+	const action = key.dataset.action;
+	const firstValue = state.firstValue;
+	const modValue = state.modValue;
+	const operator = state.operation;
+	const previousKeyType = state.previousKeyType;
+	const keyType = getKeyType(key);
+
+	if (keyType === "number") {
+		return displayedNum === "0" ||
+			previousKeyType === "operator" ||
+			previousKeyType === "calculate"
+			? keyContent
+			: displayedNum + keyContent;
+	}
+
+	if (keyType === "decimal") {
+		if (!displayedNum.includes(".")) return displayedNum + ".";
+		if (previousKeyType === "operator" || previousKeyType === "calculate")
+			return "0.";
+		return displayedNum;
+	}
+
+	if (keyType === "operator") {
+		return firstValue &&
+			operator &&
+			previousKeyType !== "operator" &&
+			previousKeyType !== "calculate"
+			? calculate(firstValue, operator, displayedNum)
+			: displayedNum;
+	}
+
+	if (keyType === "clear") return 0;
+
+	if (keyType === "calculate") {
+		return firstValue
+			? previousKeyType === "calculate"
+				? calculate(displayedNum, operator, modValue)
+				: calculate(firstValue, operator, displayedNum)
+			: displayedNum;
+	}
+};
+
+const getKeyType = key => {
+	const { action } = key.dataset;
+	if (!action) return "number";
+	if (
+		action === "add" ||
+		action === "subtract" ||
+		action === "multiply" ||
+		action === "divide"
+	)
+		return "operator";
+	// For everything else, return the action
+	return action;
+};
 
 const calculate = (n1, operator, n2) => {
 	const firstNum = parseFloat(n1);
