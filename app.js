@@ -103,6 +103,7 @@ const updateCalculatorState = (
 };
 
 const getKeyType = key => {
+	// Make an object of action
 	const { action } = key.dataset;
 	if (!action) {
 		return "number";
