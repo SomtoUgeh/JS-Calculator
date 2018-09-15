@@ -45,6 +45,23 @@ calculator__keys.addEventListener("click", e => {
 					return "0.";
 				return displayedNum;
 			}
+
+			if (
+				action === "add" ||
+				action === "subtract" ||
+				action === "multiply" ||
+				action === "divide"
+			) {
+				const firstValue = calculator.dataset.firstValue;
+				const operator = calculator.dataset.operation;
+
+				return firstValue &&
+					operator &&
+					previousKeyType !== "operator" &&
+					previousKeyType !== "calculate"
+					? calculate(firstValue, operator, displayedNum)
+					: displayedNum;
+			}
 		};
 
 		// Impure function
