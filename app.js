@@ -6,7 +6,11 @@ calculator__keys.addEventListener("click", e => {
 	if (e.target.matches("button")) {
 		const key = e.target;
 		const displayedNum = calculator__display.textContent;
-		const resultString = createResultString(key, displayedNum, calculator.dataset);
+		const resultString = createResultString(
+			key,
+			displayedNum,
+			calculator.dataset
+		);
 
 		calculator__display.textContent = resultString;
 		updateCalculatorState(key, calculator, resultString, displayedNum);
@@ -16,7 +20,6 @@ calculator__keys.addEventListener("click", e => {
 
 const createResultString = (key, displayedNum, state) => {
 	const keyContent = key.textContent;
-	const action = key.dataset.action;
 	const firstValue = state.firstValue;
 	const modValue = state.modValue;
 	const operator = state.operation;
@@ -26,7 +29,9 @@ const createResultString = (key, displayedNum, state) => {
 	if (keyType === "number") {
 		return displayedNum === "0" ||
 			previousKeyType === "operator" ||
-			previousKeyType === "calculate" ? keyContent : displayedNum + keyContent;
+			previousKeyType === "calculate"
+			? keyContent
+			: displayedNum + keyContent;
 	}
 
 	if (keyType === "decimal") {
@@ -40,21 +45,32 @@ const createResultString = (key, displayedNum, state) => {
 		return firstValue &&
 			operator &&
 			previousKeyType !== "operator" &&
-			previousKeyType !== "calculate" ? calculate(firstValue, operator, displayedNum) : displayedNum;
+			previousKeyType !== "calculate"
+			? calculate(firstValue, operator, displayedNum)
+			: displayedNum;
 	}
 
 	if (keyType === "clear") return 0;
 
 	if (keyType === "calculate") {
-		return firstValue ? previousKeyType === "calculate"
+		return firstValue
+			? previousKeyType === "calculate"
 				? calculate(displayedNum, operator, modValue)
 				: calculate(firstValue, operator, displayedNum)
-			: displayedNum;									
+			: displayedNum;
 	}
 };
 
-const updateCalculatorState = (key, calculator, calculatedValue, displayedNum) => {
-	// let firstValue = calculator.dataset.firstValue;
+const updateCalculatorState = (
+	key,
+	calculator,
+	calculatedValue,
+	displayedNum
+) => {
+	const firstValue = calculator.dataset.firstValue;
+	const modValue = calculator.dataset.modValue;
+	const operator = calculator.dataset.operation;
+	const previousKeyType = calculator.dataset.previousKeyType;
 	const keyType = getKeyType(key);
 	calculator.dataset.previousKeyType = keyType;
 
@@ -64,7 +80,9 @@ const updateCalculatorState = (key, calculator, calculatedValue, displayedNum) =
 			firstValue &&
 			operator &&
 			previousKeyType !== "operator" &&
-			previousKeyType !== "calculate" ? calculatedValue : displayedNum;
+			previousKeyType !== "calculate"
+				? calculatedValue
+				: displayedNum;
 	}
 
 	if (keyType === "clear") {
@@ -77,7 +95,10 @@ const updateCalculatorState = (key, calculator, calculatedValue, displayedNum) =
 	}
 
 	if (keyType === "calculate") {
-		calculator.dataset.modValue = firstValue && previousKeyType === "calculate" ? modValue : displayedNum;
+		calculator.dataset.modValue =
+			firstValue && previousKeyType === "calculate"
+				? modValue
+				: displayedNum;
 	}
 };
 
