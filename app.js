@@ -3,21 +3,22 @@ const calculator__keys = document.querySelector(".calculator__keys");
 const calculator__display = document.querySelector(".calculator__display");
 
 calculator__keys.addEventListener("click", e => {
-	if (e.target.matches("button")) return;
-	const key = e.target;
-	const displayedNum = calculator__display.textContent;
-	const resultString = createResultString(
-		key,
-		displayedNum,
-		calculator.dataset
-	);
+	if (e.target.matches("button")) {
+		const key = e.target;
+		const displayedNum = calculator__display.textContent;
+		const resultString = createResultString(
+			key,
+			displayedNum,
+			calculator.dataset
+		);
 
-	calculator__display.textContent = resultString;
-	updateCalculatorState(key, calculator, resultString, displayedNum);
-	updateVisualState(key, calculator);
+		calculator__display.textContent = resultString;
+		updateCalculatorState(key, calculator, resultString, displayedNum);
+		updateVisualState(key, calculator);
+	}
 });
 
-createResultString = (key, displayedNum, state) => {
+const createResultString = (key, displayedNum, state) => {
 	const keyContent = key.textContent;
 	const action = key.dataset.action;
 	const firstValue = state.firstValue;
@@ -61,12 +62,19 @@ createResultString = (key, displayedNum, state) => {
 	}
 };
 
-updateCalculatorState = (key, calculator, calculatedValue, displayedNum) => {
+const updateCalculatorState = (
+	key,
+	calculator,
+	calculatedValue,
+	displayedNum
+) => {
+	// let firstValue = calculator.dataset.firstValue;
 	const keyType = getKeyType(key);
-	calculate.dataset.previousKeyType = keyType;
+	calculator.dataset.previousKeyType = keyType;
 
 	if (keyType === "operator") {
 		calculator.dataset.operator = key.dataset.action;
+		console.log(firstValue);
 		calculator.dataset.firstValue =
 			firstValue &&
 			operator &&
@@ -76,7 +84,7 @@ updateCalculatorState = (key, calculator, calculatedValue, displayedNum) => {
 				: displayedNum;
 	}
 
-	if (action === "clear") {
+	if (keyType === "clear") {
 		if (key.textContent === "AC") {
 			calculator.dataset.firstValue = "";
 			calculator.dataset.modValue = "";
@@ -93,7 +101,25 @@ updateCalculatorState = (key, calculator, calculatedValue, displayedNum) => {
 	}
 };
 
-updateVisualState = (key, calculator) => {
+const getKeyType = key => {
+	const { action } = key.dataset;
+	if (!action) {
+		return "number";
+	}
+	if (
+		action === "add" ||
+		action === "subtract" ||
+		action === "multiply" ||
+		action === "divide"
+	) {
+		return "operator";
+	}
+
+	// For everything else, return the action
+	return action;
+};
+
+const updateVisualState = (key, calculator) => {
 	const keyType = getKeyType(key);
 	Array.from(key.parentNode.children).forEach(k =>
 		k.classList.remove("is-depressed")
@@ -111,21 +137,7 @@ updateVisualState = (key, calculator) => {
 	}
 };
 
-getKeyType = key => {
-	const { action } = key.dataset;
-	if (!action) return "number";
-	if (
-		action === "add" ||
-		action === "subtract" ||
-		action === "multiply" ||
-		action === "divide"
-	)
-		return "operator";
-	// For everything else, return the action
-	return action;
-};
-
-calculate = (n1, operator, n2) => {
+const calculate = (n1, operator, n2) => {
 	const firstNum = parseFloat(n1);
 	const secondNum = parseFloat(n2);
 	if (operator === "add") return firstNum + secondNum;
