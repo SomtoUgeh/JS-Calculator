@@ -16,34 +16,41 @@ calculator__keys.addEventListener("click", e => {
 			k.classList.remove("is-depressed")
 		);
 
-		if (!action) {
-			if (
-				displayedNum === "0" ||
-				previousKeyType === "operator" ||
-				previousKeyType === "calculate"
-			) {
-				calculator__display.textContent = keyContent;
-			} else {
-				calculator__display.textContent = displayedNum + keyContent;
+		// Splitting code into pure and impure functions
+
+		// Pure function
+		const resultString = createResultString();
+
+		createResultString = () => {
+			// Variables required are:
+			// 1. keyContent
+			// 2. displayedNum
+			// 3. previousKeyType
+			// 4. action
+
+			if (!action) {
+				return displayedNum === "0" ||
+					previousKeyType === "operator" ||
+					previousKeyType === "calculate"
+					? keyContent
+					: displayedNum + keyContent;
 			}
 
-			calculator.dataset.previousKeyType = "number";
-		}
-
-		if (action === "decimal") {
-			if (!displayedNum.includes(".")) {
-				calculator__display.textContent = displayedNum + ".";
+			if (action === "decimal") {
+				if (!displayedNum.includes(".")) return displayedNum + ".";
+				if (
+					previousKeyType === "operator" ||
+					previousKeyType === "calculate"
+				)
+					return "0.";
+				return displayedNum;
 			}
+		};
 
-			if (
-				previousKeyType === "operator" ||
-				previousKeyType === "calculate"
-			) {
-				calculator__display.textContent = "0.";
-			}
+		// Impure function
 
-			calculator.dataset.previousKeyType = "decimal";
-		}
+		calculator__display.textContent = resultString;
+		updateCalculatorState();
 
 		if (
 			action === "add" ||
